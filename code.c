@@ -1,52 +1,52 @@
 #include <stdio.h>
+#include <string.h>
 
-int vetor[300];
+#define MAXN 1010
+
+/* matriz de adjacencias */
+int A[MAXN][MAXN], visitado[MAXN], dis[MAXN];
+
 int n, m;
-int calc [300][300];
 
+int dijkstra() {
+  int i;
 
-int min(int a, int b){
-    if(a < b) 
-        return a;
-    return b;
+  memset(dis, 0x3f, sizeof(dis)); /* distancia inicial infinita */
+  memset(visitado, 0, sizeof(visitado));
+  dis[0] = 0;
+
+  for (int y =0;y<n;y++) {
+    int no = -1;
+    for (i = 0; i < n; i++){
+      if (!visitado[i] && (no == -1 || dis[i] < dis[no]))
+        no = i;
+    }
+
+    if (no == -1) break;
+    visitado[no] = 1;
+
+    for (i = 0; i < n; i++){
+      if (dis[no] + A[no][i] < dis[i])
+        dis[i] = dis[no] + A[no][i];
+    }
+  }    
+
+  return dis[n-1];
 }
 
+int main() {
+  int i;
+  int s, t, b;
 
-// Tá uma merda não funciona nada
-int resolve(int indice, int final, int quantidadePontes){
-    int caminho = 10000;
-    int caminho1 = 10000;
-    int estadoInicial = vetor[3*indice];
-    int estadoFinal = vetor[3*indice + 1];
-    int buracos = vetor[3*indice +2];
-    
-    int i = indice+1;
-    
-    while(vetor[3*i+1] != final){
-        if (vetor[3*i] == estadoFinal){
-            caminho = buracos + vetor[3*i+2];
-        }else if (vetor[3*i] == estadoInicial ){
-            caminho1 = resolve(i, final, quantidadePontes);
-        }
-        i++;
-    }
-    
-    return min(caminho,caminho1);
-   
-}
+  scanf("%d%d", &n, &m);
+  n += 2; /* imagina os as bordas como pilares */
+  memset(A, 0x3f, sizeof(A));	/* numero de buracos infinito */
+  for (i = 0; i < m; i++) {
+    scanf("%d%d%d", &s, &t, &b);
+    A[s][t] = A[t][s] = b;
+  }
+  
+  printf("%d\n", dijkstra());
 
-
-int main(){
-    
-    scanf("%d %d", &n, &m);
-    
-    for(int i =0; i < m; i++){
-        int s, t, b;
-        scanf("%d %d %d", &s, &t, &b);
-        vetor[3*i] = s; // inicio
-        vetor[3*i+1] = t; // fim
-        vetor[3*i+2] = b; // quantidade de buracos entre inicio e fim 
-    }
-    int resultado = resolve(0, n+1, m);
-    printf("%d\n", resultado);
+  return 0;
 }
