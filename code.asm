@@ -75,7 +75,7 @@ resolve:                   ; função dijkstra
 
    
     mov eax, 0
-    mov [dis], eax
+    mov [dis], al
     
 while:
 
@@ -89,9 +89,9 @@ innerfor1:
     jne endinnerfor1         ; se sim, end
     cmp edx, -1             ; edx == -1
     je condicao             ; se sim, condicao
-    mov eax, [dis + ecx]
-    mov ebx, [dis + edx]    ; ebx = dis[edx]
-    cmp eax, ebx
+    mov al, [dis + ecx]
+    mov bl, [dis + edx]    ; ebx = dis[edx]
+    cmp al, bl
     jl condicao
     jmp endinnerfor1
 condicao:
@@ -109,11 +109,11 @@ endinnerfor1:
 innerfor2:
     mov ebx, 0
     imul bx, dx, byte 60
-    add bl, cl            ; ebx = [no][i]           
+    add ebx, ecx            ; ebx = [no][i]           
     mov al, [dis + edx]      ; eax = dis[no]
     add al, [A + ebx]        ; eax = dis[no] + A[no][i]
     mov bl, [dis + ecx]      ; ebx = dis[i]  
-    cmp eax, ebx      ; soma >= dis[i]
+    cmp al, bl      ; soma >= dis[i]
     jge endinnerfor2
     mov [dis + ecx], al
 endinnerfor2:
@@ -121,6 +121,7 @@ endinnerfor2:
     cmp ecx, [pilares]
     jl innerfor2
     jmp while
+    
 break:
     
     mov ebx, [pilares]
